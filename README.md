@@ -24,8 +24,6 @@ This script will:
 2. Install it to `/opt/network-monitor-connector`.
 3. Set up a Systemd service (`network-monitor`) to keep it running in the background.
 
-**Note:** Ensure you have created a Release on GitHub and uploaded the compiled binary named `network-monitor-connector`.
-
 ## Configuration
 
 The configuration file is located at:
