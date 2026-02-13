@@ -1,0 +1,7 @@
+host: 0.0.0.0
+port: 8080
+whitelist:
+  enabled: true
+  list:
+  - 0.0.0.0/0
+token: dlBuvtzaVd0QxMdQdZT1yCqLviAlEu49
