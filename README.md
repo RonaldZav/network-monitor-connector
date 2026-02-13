@@ -11,6 +11,7 @@ A lightweight, high-performance system monitoring API written in Rust. It provid
 *   **Easy Deployment**: Downloads the pre-compiled binary directly from GitHub Releases.
 
 ## Quick Install (Ubuntu/Debian)
+ONLY SUPPORT FOR x86_64 CPU, IF YOU USE ARM CPU, DOWNLOAD SOURCE CODE AND COMPILE.
 
 Run the following command in your terminal to install and start the service automatically:
 
