@@ -32,7 +32,7 @@ The configuration file is located at:
 
 ```yaml
 host: 0.0.0.0
-port: 8080
+port: 2141
 whitelist:
   enabled: true
   list:
@@ -102,3 +102,6 @@ sudo rm /etc/systemd/system/network-monitor.service
 sudo rm -rf /opt/network-monitor-connector
 sudo systemctl daemon-reload
 ```
+
+---
+by RonaldZav

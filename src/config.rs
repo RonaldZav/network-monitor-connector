@@ -23,7 +23,7 @@ impl Default for AppConfig {
     fn default() -> Self {
         AppConfig {
             host: "0.0.0.0".to_string(),
-            port: 8080,
+            port: 2141,
             whitelist: WhitelistConfig {
                 enabled: true,
                 list: vec!["127.0.0.1/32".to_string()],

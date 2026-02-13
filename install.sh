@@ -5,11 +5,13 @@ REPO="ronaldzav/network-monitor-connector"
 INSTALL_DIR="/opt/network-monitor-connector"
 SERVICE_NAME="network-monitor"
 BINARY_NAME="network-monitor-connector"
+DEFAULT_PORT=2141
 
 # Colors
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 RED='\033[0;31m'
+YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}========================================${NC}"
@@ -28,7 +30,12 @@ echo -e "${GREEN}[+] Installing dependencies (curl)...${NC}"
 apt-get update -qq && apt-get install -y -qq curl ca-certificates
 
 # 2. Prepare Install Directory
-mkdir -p "$INSTALL_DIR"
+if [ ! -d "$INSTALL_DIR" ]; then
+    echo -e "${GREEN}[+] Creating installation directory: $INSTALL_DIR${NC}"
+    mkdir -p "$INSTALL_DIR"
+else
+    echo -e "${YELLOW}[!] Installation directory already exists.${NC}"
+fi
 
 # 3. Download Latest Binary
 echo -e "${GREEN}[+] Fetching latest release info...${NC}"
@@ -44,6 +51,12 @@ if [ -z "$DOWNLOAD_URL" ]; then
     exit 1
 fi
 
+# Stop service if running to allow binary replacement
+if systemctl is-active --quiet $SERVICE_NAME; then
+    echo -e "${YELLOW}[!] Stopping existing service to update binary...${NC}"
+    systemctl stop $SERVICE_NAME
+fi
+
 echo -e "${GREEN}[+] Downloading binary from: $DOWNLOAD_URL${NC}"
 curl -L -o "$INSTALL_DIR/$BINARY_NAME" "$DOWNLOAD_URL"
 chmod +x "$INSTALL_DIR/$BINARY_NAME"
@@ -53,7 +66,7 @@ if [ ! -f "$INSTALL_DIR/config.yml" ]; then
     echo -e "${GREEN}[+] Creating default configuration...${NC}"
     cat > "$INSTALL_DIR/config.yml" <<EOF
 host: 0.0.0.0
-port: 8080
+port: $DEFAULT_PORT
 whitelist:
   enabled: true
   list:
@@ -64,7 +77,7 @@ else
     echo -e "${GREEN}[+] Config file already exists, preserving it.${NC}"
 fi
 
-# 5. Create Systemd Service
+# 5. Create Systemd Service (Always update to ensure correct paths)
 echo -e "${GREEN}[+] Configuring Systemd service...${NC}"
 cat > /etc/systemd/system/$SERVICE_NAME.service <<EOF
 [Unit]
@@ -91,7 +104,7 @@ systemctl restart $SERVICE_NAME
 
 # 7. Final Status
 echo -e "${BLUE}========================================${NC}"
-echo -e "${GREEN}Installation Complete!${NC}"
+echo -e "${GREEN}Installation/Update Complete!${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo "Service status:"
 systemctl status $SERVICE_NAME --no-pager | head -n 10
